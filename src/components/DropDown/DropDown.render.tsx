@@ -6,7 +6,7 @@ import { Element } from '@ws-ui/craftjs-core';
 
 import { IDropDownProps } from './DropDown.config';
 
-const DropDown: FC<IDropDownProps> = ({ position, action, style, className, classNames = [] }) => {
+const DropDown: FC<IDropDownProps> = ({ position, action, icone, style, className, classNames = [] }) => {
   const { connect } = useRenderer();
   const { resolver } = useEnhancedEditor(selectResolver);
   const dialogRoot = document.getElementById('dialogs-root');
@@ -18,7 +18,7 @@ const DropDown: FC<IDropDownProps> = ({ position, action, style, className, clas
         position={position}
         trigger={
           <button>
-            <i className="button_icon fa-solid fa-house"></i>
+            <i className={`button_icon ${icone}`}></i>
           </button>
         }
         isShown={isShown}

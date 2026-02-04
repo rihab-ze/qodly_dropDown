@@ -1,6 +1,6 @@
 import { EComponentKind, T4DComponentConfig } from '@ws-ui/webform-editor';
 import { Settings } from '@ws-ui/webform-editor';
-import { MdOutlineTextSnippet } from 'react-icons/md';
+import { MdHome } from 'react-icons/md';
 
 import DropDownSettings, { BasicSettings } from './DropDown.settings';
 
@@ -31,7 +31,7 @@ export default {
     settings: DropDownSettings,
     displayName: 'DropDown',
     exposed: true,
-    icon: MdOutlineTextSnippet,
+    icon: MdHome,
     events: [
       {
         label: 'On Click',
