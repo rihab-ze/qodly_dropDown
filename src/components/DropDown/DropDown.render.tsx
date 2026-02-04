@@ -1,38 +1,34 @@
-import { useRenderer, useSources } from '@ws-ui/webform-editor';
+import { selectResolver, useEnhancedEditor, useRenderer } from '@ws-ui/webform-editor';
 import cn from 'classnames';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
+import DropDownComponent from './DropDown';
+import { Element } from '@ws-ui/craftjs-core';
 
 import { IDropDownProps } from './DropDown.config';
 
-const DropDown: FC<IDropDownProps> = ({ name, style, className, classNames = [] }) => {
+const DropDown: FC<IDropDownProps> = ({ position, action, style, className, classNames = [] }) => {
   const { connect } = useRenderer();
-  const [value, setValue] = useState(() => name);
-  const {
-    sources: { datasource: ds },
-  } = useSources();
-
-  useEffect(() => {
-    if (!ds) return;
-
-    const listener = async (/* event */) => {
-      const v = await ds.getValue<string>();
-      setValue(v || name);
-    };
-
-    listener();
-
-    ds.addListener('changed', listener);
-
-    return () => {
-      ds.removeListener('changed', listener);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ds]);
+  const { resolver } = useEnhancedEditor(selectResolver);
+  const dialogRoot = document.getElementById('dialogs-root');
+  const [isShown, setIsShown] = useState(false);
 
   return (
-    <span ref={connect} style={style} className={cn(className, classNames)}>
-      Hello {value}!
-    </span>
+    <div ref={connect} style={style} className={cn(className, classNames)}>
+      <DropDownComponent
+        position={position}
+        trigger={
+          <button>
+            <i className="button_icon fa-solid fa-house"></i>
+          </button>
+        }
+        isShown={isShown}
+        action={action}
+        handleToggle={setIsShown}
+        dialogRoot={dialogRoot}
+      >
+        <Element id="PopoverContent" is={resolver.StyleBox} canvas />
+      </DropDownComponent>
+    </div>
   );
 };
 

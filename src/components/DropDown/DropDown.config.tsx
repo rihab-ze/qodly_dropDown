@@ -4,6 +4,16 @@ import { MdOutlineTextSnippet } from 'react-icons/md';
 
 import DropDownSettings, { BasicSettings } from './DropDown.settings';
 
+type Position =
+  | 'bottom-center'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top-center'
+  | 'top-left'
+  | 'top-right'
+  | 'left-center'
+  | 'right-center';
+
 export default {
   craft: {
     displayName: 'DropDown',
@@ -57,10 +67,20 @@ export default {
     },
   },
   defaultProps: {
-    name: 'Qodly',
+    position: 'bottom-center',
+    isShown: false,
+    action: 'click',
+    style: {
+      minWidth: '48px',
+      width: 'fit-content',
+    },
+    icone: 'fa-solid fa-house',
   },
 } as T4DComponentConfig<IDropDownProps>;
 
 export interface IDropDownProps extends webforms.ComponentProps {
-  name?: string;
+  position: Position;
+  isShown: boolean;
+  action: 'click' | 'hover';
+  icone: string;
 }

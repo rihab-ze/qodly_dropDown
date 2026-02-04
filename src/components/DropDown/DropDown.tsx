@@ -32,11 +32,48 @@ const DropDown: FC<DropDownProps> = ({
     left: 0,
     top: 0,
   });
+  const [triggerOffset, setTriggerOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [display, setDisplay] = useState<string>('hidden');
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   let qodlyCanva: any = document.getElementsByClassName('fd-canvas')[0];
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+
+      setTriggerOffset(prev => ({
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }));
+
+      setDragStart({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragStart]);
+
   const updateDropDownPosition = () => {
     if (isShown && triggerRef.current && contentRef.current) {
       const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -120,14 +157,33 @@ const DropDown: FC<DropDownProps> = ({
 
   return (
     <div className="DropDown">
-      <div
+      <button
         className="trigger"
         ref={triggerRef}
-        onClick={() => action === 'click' && handleToggle(!isShown)}
+        onMouseDown={handleMouseDown}
+        onClick={() => !isDragging && action === 'click' && handleToggle(!isShown)}
         onMouseEnter={() => action === 'hover' && handleToggle(true)}
+        style={{
+          transform: `translate(${triggerOffset.x}px, ${triggerOffset.y}px)`,
+          cursor: isDragging ? 'grabbing' : 'grab',
+          userSelect: isDragging ? 'none' : 'auto',
+          border: 'none',
+          padding: '8px 16px',
+          width: ' 40px',
+          height: '40px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          borderRadius: '50%',
+          fontSize: '14px',
+          fontWeight: '500',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background-color 0.2s',
+        }}
       >
         {trigger}
-      </div>
+      </button>
       {dialogRoot &&
         isShown &&
         createPortal(
