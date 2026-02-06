@@ -36,7 +36,7 @@ const commonSettings: TSetting[] = [
   },
   {
     key: 'icone',
-    label: 'Marker Icon',
+    label: 'Button Icon',
     type: ESetting.ICON_PICKER,
     defaultValue: 'fa-solid fa-house',
   },
